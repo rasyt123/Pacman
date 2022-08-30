@@ -3,19 +3,20 @@
 //
 
 #include "Pacman.h"
-void Pacman::Pacman::RenderPacman(int row, int col, sf::RenderWindow* windowptr) {
-    float floatposy = row * 50;
-    float floatposx = col * 50;
+void Pacman::Pacman::RenderPacman(sf::RenderWindow* windowptr) {
     sf::Color yellow(255, 255, 0);
-    Pacman.setRadius(25);
-    Pacman.setFillColor(yellow);
-    Pacman.setOrigin(25,25);
-    Pacman.setPosition(floatposx + 25, floatposy + 25);
-    xpos = floatposx;
-    ypos = floatposy;
-    windowptr->draw(Pacman);
-    rowposy = row;
-    rowposx = col;
+    thepacman.setRadius(25);
+    thepacman.setFillColor(yellow);
+    thepacman.setOrigin(25,25);
+    thepacman.setPosition(xpos + 25, ypos + 25);
+}
+
+
+Pacman::Pacman::Pacman(int row1, int col1) {
+    xpos = col1 * 50;
+    ypos = row1 * 50;
+    rowposy = row1;
+    colposx = col1;
 }
 
 void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
@@ -38,19 +39,24 @@ void Pacman::Pacman::update(sf::Time deltaTime)
     sf::Vector2f movement(0.f, 0.f);
     if (uppressed)
         movement.y -= speed;
+        ypos -= speed;
     if (downpressed)
         movement.y += speed;
+        ypos += speed;
     if (leftpressed)
         movement.x -= speed;
+        xpos -= speed;
     if (rightpressed)
         movement.x += speed;
-    Pacman.move(movement * deltaTime.asSeconds());
+        xpos += speed;
+    thepacman.move(movement * deltaTime.asSeconds());
 }
 
 
 
 
-void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr) {
+void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr)
+{
     sf::Event event;
     //When I tap the key, I want to keep moving in that direction until I hit a wall
     //set a boolean called movementhold
@@ -89,5 +95,9 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr) {
         }
     }
 }
+
+
+
+
 
 
