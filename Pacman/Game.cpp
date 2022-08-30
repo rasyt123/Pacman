@@ -10,19 +10,20 @@ void Pacman::Game::PacGameLoop() {
     sf::RenderWindow pacwindow(sf::VideoMode(50 * pacmanmap[0].size(), 50 * pacmanmap.size()), "Pacman", sf::Style::Close | sf::Style::Titlebar);
     sf::Time TimePerFrame;
     TimePerFrame = sf::seconds(1.f / 60.f);
+    Pacman pacman1(1, 1);
     DrawMap(&pacwindow);
+    pacman1.RenderPacman(&pacwindow);
     while (pacwindow.isOpen())
     {
         timeSinceLastUpdate += clock.restart();
-
         while (timeSinceLastUpdate > TimePerFrame)
         {
             timeSinceLastUpdate -= TimePerFrame;
+            DrawMap(&pacwindow);
+            pacman1.ProcessPacmanMovement(&pacwindow);
         }
-
         pacwindow.display();
         pacwindow.clear();
-
     }
 }
 
@@ -82,4 +83,9 @@ void Pacman::Game::DrawMap(sf::RenderWindow* windowptr) {
             }
         }
     }
+}
+
+Pacman::Game::Game(int score, int lives) {
+    this->score = score;
+    this->score = lives;
 }
