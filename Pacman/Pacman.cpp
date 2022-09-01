@@ -5,9 +5,9 @@
 #include "Pacman.h"
 void Pacman::Pacman::RenderPacman(sf::RenderWindow* windowptr) {
     sf::Color yellow(255, 255, 0);
-    thepacman.setRadius(20);
+    thepacman.setRadius(25);
     thepacman.setFillColor(yellow);
-    thepacman.setOrigin(20,20);
+    thepacman.setOrigin(25,25);
     thepacman.setPosition(xpos + 25, ypos + 25);
 }
 
@@ -50,6 +50,14 @@ void Pacman::Pacman::update(sf::Time deltaTime)
         movement.x += speed;
         xpos += speed;
     thepacman.move(movement * deltaTime.asSeconds());
+}
+
+void Pacman::Pacman::PacmanSetDetect()
+{
+     topleftrect = {ypos, ypos + 25, xpos, xpos + 25};
+     toprightrect = {ypos, ypos + 25, xpos + 25, xpos + 50};
+     bottomleftrect = {ypos + 25, ypos + 50, xpos, xpos + 25};
+     bottomrightrect = {ypos + 25, ypos + 50, xpos + 25, xpos + 50};
 }
 
 
@@ -97,6 +105,7 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     }
     update(timeperframe);
 }
+
 
 
 
