@@ -31,6 +31,17 @@ void Pacman::Game::PacGameLoop() {
     }
 }
 
+
+void Pacman::Game::CollisonCheck(Pacman& paccolide) {
+    for (std::pair<float, float>& wall : rectanglecoords)
+    {
+
+
+
+    }
+    
+}
+
 void Pacman::Game::RenderWall(int row, int col, sf::RenderWindow* windowptr)
 {
     float floatposy = row * 50;
@@ -40,6 +51,8 @@ void Pacman::Game::RenderWall(int row, int col, sf::RenderWindow* windowptr)
     wall.setPosition(floatposx, floatposy);
     wall.setFillColor(blue);
     windowptr->draw(wall);
+    std::pair<float, float> currentcoords(floatposx, floatposy);
+    rectanglecoords.push_back(currentcoords);
 }
 
 void Pacman::Game::RenderPellet(int row, int col, sf::RenderWindow* windowptr) {
@@ -51,6 +64,8 @@ void Pacman::Game::RenderPellet(int row, int col, sf::RenderWindow* windowptr) {
     pellet.setOrigin(5,5);
     pellet.setPosition(floatposx + 25, floatposy + 25);
     windowptr->draw(pellet);
+    std::pair<float, float> currentcoords;
+    rectanglecoords.push_back(currentcoords);
 }
 
 
@@ -64,6 +79,8 @@ void Pacman::Game::RenderPowerPellet(int row, int col, sf::RenderWindow* windowp
     bigpellet.setOrigin(10,10);
     bigpellet.setPosition(floatposx + 25, floatposy + 25);
     windowptr->draw(bigpellet);
+    std::pair<float, float> currentcoords;
+    rectanglecoords.push_back(currentcoords);
 }
 
 
