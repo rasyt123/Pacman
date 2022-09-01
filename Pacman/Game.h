@@ -21,10 +21,14 @@ namespace Pacman {
             void RenderWall(int row, int col, sf::RenderWindow* windowptr);
             void RenderPellet(int row, int col, sf::RenderWindow* windowptr);
             void RenderPowerPellet(int row, int col, sf::RenderWindow* windowptr);
+            void CollisonCheck(Pacman& paccolide);
 
         private:
             int score;
             int lives;
+            std::vector<std::pair<float, float>> rectanglecoords;
+            std::vector<std::pair<float, float>> pelletcoords;
+            std::vector<std::pair<float, float>> powerpelletcoords;
             std::vector<std::string> pacmanmap = {
                     " ################### ",
                     " #........#........# ",
@@ -54,3 +58,4 @@ namespace Pacman {
 
 
 #endif //PACMAN_GAME_H
+
