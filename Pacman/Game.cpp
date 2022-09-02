@@ -1,6 +1,4 @@
-//
-// Created by rasyt on 8/27/2022.
-//
+
 
 #include "Game.h"
 void Pacman::Game::PacGameLoop() {
@@ -49,8 +47,8 @@ bool Pacman::Game::CollisonCheck(Pacman& paccolide) {
             //both  projections must be intersecting for there to be a collision
             if (((wallybottom >= rectangle[0] and wallybottom <= rectangle[1]) or
             (wallytop <= rectangle[1] and wallytop >= rectangle[0]))
-             and ((rectangle[2] < wallxright and rectangle[2] > wallxleft)
-             or (wallxleft < rectangle[3] and wallxleft > rectangle[2])))
+             and ((rectangle[2] <= wallxright and rectangle[2] >= wallxleft)
+             or (wallxleft <= rectangle[3] and wallxleft >= rectangle[2])))
             {
                 return true;
             }
