@@ -12,11 +12,12 @@ void Pacman::Pacman::RenderPacman(sf::RenderWindow* windowptr) {
 }
 
 
-Pacman::Pacman::Pacman(int row1, int col1) {
+Pacman::Pacman::Pacman(int row1, int col1, std::vector<std::pair<float, float>> rectangleneeds) {
     xpos = col1 * 50;
     ypos = row1 * 50;
     rowposy = row1;
     colposx = col1;
+    rectanglelocations = rectangleneeds;
 }
 
 void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
@@ -37,6 +38,8 @@ void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
 void Pacman::Pacman::update(sf::Time deltaTime)
 {
     sf::Vector2f movement(0.f, 0.f);
+    float oldypos = ypos;
+    float oldxpos = xpos;
     if (uppressed)
         movement.y -= speed;
         ypos -= speed;
@@ -54,13 +57,40 @@ void Pacman::Pacman::update(sf::Time deltaTime)
 
 void Pacman::Pacman::PacmanSetDetect()
 {
+     all4rects.clear();
      topleftrect = {ypos, ypos + 25, xpos, xpos + 25};
      toprightrect = {ypos, ypos + 25, xpos + 25, xpos + 50};
      bottomleftrect = {ypos + 25, ypos + 50, xpos, xpos + 25};
      bottomrightrect = {ypos + 25, ypos + 50, xpos + 25, xpos + 50};
+     all4rects.push_back(topleftrect);
+     all4rects.push_back(toprightrect);
+     all4rects.push_back(bottomleftrect);
+     all4rects.push_back(bottomrightrect);
 }
 
 
+bool Pacman::Pacman::CollisonCheck() {
+    for (std::pair<float, float>& wall : rectanglelocations)
+    {
+        float wallxleft = wall.first;
+        float wallxright = wall.first + 50;
+        float wallytop = wall.second;
+        float wallybottom = wall.second + 50;
+        for (std::vector<float>& rectangle : all4rects)
+        {
+            //check for an intersection in both planes
+            //both  projections must be intersecting for there to be a collision
+            if (((wallybottom > rectangle[0] and wallybottom < rectangle[1]) or
+                 (wallytop < rectangle[1] and wallytop > rectangle[0]))
+                and ((rectangle[2] < wallxright and rectangle[2] > wallxleft)
+                     or (wallxleft < rectangle[3] and wallxleft > rectangle[2])))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 
 void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time timeperframe)
@@ -95,7 +125,6 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
                             break;
                     }
                 }
-                std::cout << "key Pressed!" << std::endl;
                 handlePlayerInputPacman(event.key.code, true);
                 break;
             case sf::Event::Closed:
@@ -105,6 +134,7 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     }
     update(timeperframe);
 }
+
 
 
 
