@@ -54,14 +54,11 @@ void Pacman::Pacman::update(sf::Time deltaTime)
         movement.x += speed;
         xpos += speed;
     PacmanSetDetect();
-    if (CollisonCheck()) 
+    if (CollisonCheck())
     {
-        
-        
-    } else 
-    {
-        
-        
+        ypos = oldypos;
+        xpos = oldxpos;
+        return;
     }
     thepacman.move(movement * deltaTime.asSeconds());
 }
@@ -145,6 +142,9 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     }
     update(timeperframe);
 }
+
+
+
 
 
 
