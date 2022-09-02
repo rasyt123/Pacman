@@ -32,14 +32,31 @@ void Pacman::Game::PacGameLoop() {
 }
 
 
-void Pacman::Game::CollisonCheck(Pacman& paccolide) {
+bool Pacman::Game::CollisonCheck(Pacman& paccolide) {
+    bool topleftcolli = false;
+    bool toprightcolli = false;
+    bool bottomleftcolli = false;
+    bool bottomrightcolli = false;
     for (std::pair<float, float>& wall : rectanglecoords)
     {
-
-
-
+        float wallxleft = wall.first;
+        float wallxright = wall.first + 50;
+        float wallytop = wall.second;
+        float wallybottom = wall.second + 50;
+        for (std::vector<float>& rectangle : paccolide.all4rects)
+        {
+            //check for an intersection in both planes
+            //both  projections must be intersecting for there to be a collision
+            if (((wallybottom >= rectangle[0] and wallybottom <= rectangle[1]) or
+            (wallytop <= rectangle[1] and wallytop >= rectangle[0]))
+             and ((rectangle[2] < wallxright and rectangle[2] > wallxleft)
+             or (wallxleft < rectangle[3] and wallxleft > rectangle[2])))
+            {
+                return true;
+            }
+        }
     }
-    
+    return false;
 }
 
 void Pacman::Game::RenderWall(int row, int col, sf::RenderWindow* windowptr)
@@ -110,3 +127,4 @@ Pacman::Game::Game(int score, int lives) {
     this->score = score;
     this->score = lives;
 }
+
