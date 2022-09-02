@@ -18,6 +18,7 @@ Pacman::Pacman::Pacman(int row1, int col1, std::vector<std::pair<float, float>> 
     rowposy = row1;
     colposx = col1;
     rectanglelocations = rectangleneeds;
+    PacmanSetDetect();
 }
 
 void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
@@ -52,6 +53,16 @@ void Pacman::Pacman::update(sf::Time deltaTime)
     if (rightpressed)
         movement.x += speed;
         xpos += speed;
+    PacmanSetDetect();
+    if (CollisonCheck()) 
+    {
+        
+        
+    } else 
+    {
+        
+        
+    }
     thepacman.move(movement * deltaTime.asSeconds());
 }
 
@@ -134,6 +145,8 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     }
     update(timeperframe);
 }
+
+
 
 
 
