@@ -7,7 +7,7 @@ void Pacman::Pacman::RenderPacman(sf::RenderWindow* windowptr) {
     sf::Color yellow(255, 255, 0);
     thepacman.setRadius(25);
     thepacman.setFillColor(yellow);
-    thepacman.setOrigin(25,25);
+    thepacman.setOrigin(25, 25);
     thepacman.setPosition(xpos + 25, ypos + 25);
 }
 
@@ -39,67 +39,63 @@ void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
 void Pacman::Pacman::update(sf::Time deltaTime)
 {
     sf::Vector2f movement(0.f, 0.f);
-    float oldypos = ypos;
-    float oldxpos = xpos;
+    sf::Vector2f oldposition = thepacman.getPosition();
     if (uppressed)
         movement.y -= speed;
-        ypos -= speed;
     if (downpressed)
         movement.y += speed;
-        ypos += speed;
     if (leftpressed)
         movement.x -= speed;
-        xpos -= speed;
     if (rightpressed)
         movement.x += speed;
-        xpos += speed;
-    PacmanSetDetect();
+    thepacman.move(movement * deltaTime.asSeconds());
+    sf::Vector2f pos = thepacman.getPosition();
+    xpos = pos.x - 25;
+    ypos = pos.y - 25;
     if (CollisonCheck())
     {
-        ypos = oldypos;
-        xpos = oldxpos;
-        return;
+        std::cout << "Hello" << std::endl;
+        thepacman.setPosition(oldposition);
     }
-    thepacman.move(movement * deltaTime.asSeconds());
 }
 
-void Pacman::Pacman::PacmanSetDetect()
-{
-     all4rects.clear();
-     topleftrect = {ypos, ypos + 25, xpos, xpos + 25};
-     toprightrect = {ypos, ypos + 25, xpos + 25, xpos + 50};
-     bottomleftrect = {ypos + 25, ypos + 50, xpos, xpos + 25};
-     bottomrightrect = {ypos + 25, ypos + 50, xpos + 25, xpos + 50};
-     all4rects.push_back(topleftrect);
-     all4rects.push_back(toprightrect);
-     all4rects.push_back(bottomleftrect);
-     all4rects.push_back(bottomrightrect);
+void Pacman::Pacman::PacmanSetDetect() {
+    all4rects.clear();
+    topleftrect = {ypos, ypos + 25, xpos, xpos + 25};
+    toprightrect = {ypos, ypos + 25, xpos + 25, xpos + 50};
+    bottomleftrect = {ypos + 25, ypos + 50, xpos, xpos + 25};
+    bottomrightrect = {ypos + 25, ypos + 50, xpos + 25, xpos + 50};
+    all4rects.push_back(topleftrect);
+    all4rects.push_back(toprightrect);
+    all4rects.push_back(bottomleftrect);
+    all4rects.push_back(bottomrightrect);
 }
-
 
 bool Pacman::Pacman::CollisonCheck() {
-    for (std::pair<float, float>& wall : rectanglelocations)
+    int counter = 0;
+    for (std::pair<float, float> wall : rectanglelocations)
     {
-        float wallxleft = wall.first;
-        float wallxright = wall.first + 50;
-        float wallytop = wall.second;
-        float wallybottom = wall.second + 50;
-        for (std::vector<float>& rectangle : all4rects)
-        {
+            float wallxleft = wall.first;
+            float wallxright = wall.first + 50;
+            float wallytop = wall.second;
+            float wallybottom = wall.second + 50;
+        //wall will be rectangle B
             //check for an intersection in both planes
             //both  projections must be intersecting for there to be a collision
-            if (((wallybottom > rectangle[0] and wallybottom < rectangle[1]) or
-                 (wallytop < rectangle[1] and wallytop > rectangle[0]))
-                and ((rectangle[2] < wallxright and rectangle[2] > wallxleft)
-                     or (wallxleft < rectangle[3] and wallxleft > rectangle[2])))
+            //pacman will be rectangle A
+            float pacrectleft = xpos;
+            float pacrectright = xpos + 50;
+            float pactrecttop = ypos;
+            float pactrectbottom = ypos + 50;
+            if ((pacrectleft < wallxright and pacrectright > wallxleft)
+            and (pactrecttop < wallybottom and pactrectbottom > wallytop))
             {
+                std::cout << "COLLIDED" << std::endl;
                 return true;
             }
-        }
     }
     return false;
 }
-
 
 void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time timeperframe)
 {
@@ -142,6 +138,7 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     }
     update(timeperframe);
 }
+
 
 
 
