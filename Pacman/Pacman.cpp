@@ -32,11 +32,11 @@ void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
         leftpressed = isPressed;
     else if (key == sf::Keyboard::D)
         rightpressed = isPressed;
-    currentkeydirection = key;
+    previouskeydirection = key;
 }
 
 
-void Pacman::Pacman::update(sf::Time deltaTime)
+void Pacman::Pacman::update(sf::Time deltaTime, sf::RenderWindow* windowptr)
 {
     sf::Vector2f movement(0.f, 0.f);
     sf::Vector2f oldposition = thepacman.getPosition();
@@ -48,14 +48,15 @@ void Pacman::Pacman::update(sf::Time deltaTime)
         movement.x -= speed;
     if (rightpressed)
         movement.x += speed;
-    thepacman.move(movement * deltaTime.asSeconds());
+    thepacman.move(movement);
     sf::Vector2f pos = thepacman.getPosition();
     xpos = pos.x - 25;
     ypos = pos.y - 25;
-    if (CollisonCheck())
+    if (CollisonCheck(windowptr))
     {
-        std::cout << "Hello" << std::endl;
         thepacman.setPosition(oldposition);
+        xpos = oldposition.x;
+        ypos = oldposition.y;
     }
 }
 
@@ -71,8 +72,9 @@ void Pacman::Pacman::PacmanSetDetect() {
     all4rects.push_back(bottomrightrect);
 }
 
-bool Pacman::Pacman::CollisonCheck() {
+bool Pacman::Pacman::CollisonCheck(sf::RenderWindow* windowptr) {
     int counter = 0;
+    bool hascollision = false;
     for (std::pair<float, float> wall : rectanglelocations)
     {
             float wallxleft = wall.first;
@@ -90,9 +92,22 @@ bool Pacman::Pacman::CollisonCheck() {
             if ((pacrectleft < wallxright and pacrectright > wallxleft)
             and (pactrecttop < wallybottom and pactrectbottom > wallytop))
             {
-                std::cout << "COLLIDED" << std::endl;
-                return true;
+                sf::RectangleShape jboy(sf::Vector2f(50, 50));
+                sf::Color whatcolor (255, 0, 0);
+                jboy.setPosition(wall.first, wall.second);
+                jboy.setFillColor(whatcolor);
+                windowptr->draw(jboy);
+                std::cout << "x of pacrect " << xpos << std::endl;
+                std::cout << "y of pacrect " << ypos << std::endl;
+                sf::Vector2f currpos = thepacman.getPosition();
+                std::cout << "center x of sprite pac: " << currpos.x << std::endl;
+                std::cout << "center y of sprite pac: " << currpos.y << std::endl;
+
+                hascollision = true;
             }
+    }
+    if (hascollision) {
+        return true;
     }
     return false;
 }
@@ -102,18 +117,23 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     sf::Event event;
     //When I tap the key, I want to keep moving in that direction until I hit a wall
     //set a boolean called movementhold
+
+
+    //When I change keys, save the new key and try movement on it and if I run into a wall,
+    //keep moving in the old direction (but testing the new direction at every frame/position )
     while (windowptr->pollEvent(event))
     {
         switch (event.type)
         {
             case sf::Event::KeyPressed:
-                if (event.key.code != currentkeydirection
+                if (event.key.code != previouskeydirection
                     and (event.key.code == sf::Keyboard::W or
                          event.key.code == sf::Keyboard::S
                          or event.key.code == sf::Keyboard::A or
                          event.key.code == sf::Keyboard::D))
                 {
-                    switch (currentkeydirection)
+                    //
+                    switch (previouskeydirection)
                     {
                         case sf::Keyboard::W:
                             uppressed = false;
@@ -136,8 +156,9 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
                 break;
         }
     }
-    update(timeperframe);
+    update(timeperframe, windowptr);
 }
+
 
 
 
