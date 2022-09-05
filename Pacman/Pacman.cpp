@@ -12,13 +12,14 @@ void Pacman::Pacman::RenderPacman(sf::RenderWindow* windowptr) {
 }
 
 
-Pacman::Pacman::Pacman(int row1, int col1, std::vector<std::pair<float, float>> rectangleneeds) {
+Pacman::Pacman::Pacman(int row1, int col1, std::vector<std::pair<float, float>> rectangleneeds, std::vector<std::string>& zacmanmap, std::vector<std::pair<float, float>> pelletcoords) {
     xpos = col1 * 50;
     ypos = row1 * 50;
     rowposy = row1;
     colposx = col1;
     rectanglelocations = rectangleneeds;
     PacmanSetDetect();
+    pacmanmap = zacmanmap;
 }
 
 void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
@@ -126,6 +127,40 @@ void Pacman::Pacman::PacmanSetDetect() {
     all4rects.push_back(bottomrightrect);
 }
 
+
+bool Pacman::Pacman::PelletCollision(sf::RenderWindow *windowptr, float pacx, float pacy)
+{
+    bool hascollision = false;
+    for (std::pair<float, float> centercoords : thepelletcoords)
+    {
+        float boxxleft = centercoords.first - 5;
+        float boxxright = centercoords.first + 5;
+        float boxytop = centercoords.second - 5;
+        float boxybottom = centercoords.second + 5;
+
+
+        float pacrectleft = pacx;
+        float pacrectright = pacx + 50;
+        float pactrecttop = pacy;
+        float pactrectbottom = pacy + 50;
+        if ((pacrectleft < boxxright and pacrectright > boxxleft)
+            and (pactrecttop < boxybottom and pactrectbottom > boxytop))
+        {
+            hascollision = true;
+            score += 10;
+            int pelletrow = (centercoords.first - 25) / 50;
+            int pelletcol = (centercoords.second - 25) / 50;
+            pacmanmap[pelletrow][pelletcol] = ' ';
+        }
+    }
+
+
+
+
+
+}
+
+
 bool Pacman::Pacman::CollisonCheck(sf::RenderWindow* windowptr, float pacx, float pacy) {
     int counter = 0;
     bool hascollision = false;
@@ -205,6 +240,7 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     }
 
 }
+
 
 
 
