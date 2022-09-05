@@ -24,16 +24,6 @@ Pacman::Pacman::Pacman(int row1, int col1, std::vector<std::pair<float, float>> 
 void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
                              bool isPressed)
 {
-    /*
-    if (key == sf::Keyboard::W)
-        uppressed = isPressed;
-    else if (key == sf::Keyboard::S)
-        downpressed = isPressed;
-    else if (key == sf::Keyboard::A)
-        leftpressed = isPressed;
-    else if (key == sf::Keyboard::D)
-        rightpressed = isPressed;
-        */
     previouskeydirection = key;
 }
 
