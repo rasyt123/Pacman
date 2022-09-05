@@ -14,20 +14,31 @@ namespace Pacman
     class Pacman
     {
     public:
-        Pacman(int row1, int col1);
+        Pacman(int row1, int col1, std::vector<std::pair<float, float>> rectangleneeds);
         void RenderPacman(sf::RenderWindow* windowptr);
         void ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time timeperframe);
         void handlePlayerInputPacman(sf::Keyboard::Key key, bool isPressed);
-        void update(sf::Time deltaTime);
+        void PacmanSetDetect();
+        bool NewKeyCheckWallCollide(sf::RenderWindow* windowptr);
+        void update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::RenderWindow* windowptr);
+        std::vector<float> topleftrect;
+        std::vector<float> toprightrect;
+        std::vector<float> bottomleftrect;
+        std::vector<float> bottomrightrect;
+        std::vector<std::vector<float>> all4rects;
+        bool CollisonCheck(sf::RenderWindow* windowptr, float pacx, float pacy);
 
         sf::CircleShape thepacman;
-    private:
-        sf::Keyboard::Key currentkeydirection;
-        float speed = 300.0f;
-        int rowposy;
-        int colposx;
         float xpos;
         float ypos;
+    private:
+        sf::Keyboard::Key previouskeydirection;
+        sf::Keyboard::Key newkey;
+        std::vector<std::pair<float, float>> rectanglelocations;
+        float speed = 5.0f;
+        int count = 0;
+        int rowposy;
+        int colposx;
         bool uppressed = false;
         bool downpressed = false;
         bool leftpressed = false;
@@ -39,3 +50,4 @@ namespace Pacman
 
 
 #endif //PACMAN_PACMAN_H
+
