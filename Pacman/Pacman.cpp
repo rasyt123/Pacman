@@ -24,6 +24,7 @@ Pacman::Pacman::Pacman(int row1, int col1, std::vector<std::pair<float, float>> 
 void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
                              bool isPressed)
 {
+    /*
     if (key == sf::Keyboard::W)
         uppressed = isPressed;
     else if (key == sf::Keyboard::S)
@@ -32,33 +33,58 @@ void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
         leftpressed = isPressed;
     else if (key == sf::Keyboard::D)
         rightpressed = isPressed;
+        */
     previouskeydirection = key;
 }
 
 
-void Pacman::Pacman::update(sf::Time deltaTime, sf::RenderWindow* windowptr)
+void Pacman::Pacman::update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::RenderWindow* windowptr)
 {
     sf::Vector2f movement(0.f, 0.f);
     sf::Vector2f oldposition = thepacman.getPosition();
-    if (uppressed)
+    if (keycode == sf::Keyboard::W)
         movement.y -= speed;
-    if (downpressed)
+    if (keycode == sf::Keyboard::S)
         movement.y += speed;
-    if (leftpressed)
+    if (keycode == sf::Keyboard::A)
         movement.x -= speed;
-    if (rightpressed)
+    if (keycode == sf::Keyboard::D)
         movement.x += speed;
     thepacman.move(movement);
     sf::Vector2f pos = thepacman.getPosition();
     xpos = pos.x - 25;
     ypos = pos.y - 25;
-    if (CollisonCheck(windowptr))
+    if (CollisonCheck(windowptr, xpos, ypos))
     {
         thepacman.setPosition(oldposition);
         xpos = oldposition.x;
         ypos = oldposition.y;
     }
 }
+
+bool Pacman::Pacman::NewKeyCheckWallCollide(sf::RenderWindow* windowptr) {
+    sf::Vector2f newpos = thepacman.getPosition();
+    float currnewposx = newpos.x;
+    float currnewposy = newpos.y;
+    if (newkey == sf::Keyboard::W)
+    {
+        currnewposy -= speed;
+    }
+    else if (newkey == sf::Keyboard::S)
+    {
+        currnewposy += speed;
+    }
+    else if (newkey == sf::Keyboard::A)
+    {
+        currnewposx -= speed;
+    } else if (newkey == sf::Keyboard::D)
+    {
+        currnewposx += speed;
+    }
+    return CollisonCheck(windowptr, currnewposx -25, currnewposy -25);
+}
+
+
 
 void Pacman::Pacman::PacmanSetDetect() {
     all4rects.clear();
@@ -72,7 +98,7 @@ void Pacman::Pacman::PacmanSetDetect() {
     all4rects.push_back(bottomrightrect);
 }
 
-bool Pacman::Pacman::CollisonCheck(sf::RenderWindow* windowptr) {
+bool Pacman::Pacman::CollisonCheck(sf::RenderWindow* windowptr, float pacx, float pacy) {
     int counter = 0;
     bool hascollision = false;
     for (std::pair<float, float> wall : rectanglelocations)
@@ -85,10 +111,10 @@ bool Pacman::Pacman::CollisonCheck(sf::RenderWindow* windowptr) {
             //check for an intersection in both planes
             //both  projections must be intersecting for there to be a collision
             //pacman will be rectangle A
-            float pacrectleft = xpos;
-            float pacrectright = xpos + 50;
-            float pactrecttop = ypos;
-            float pactrectbottom = ypos + 50;
+            float pacrectleft = pacx;
+            float pacrectright = pacx + 50;
+            float pactrecttop = pacy;
+            float pactrectbottom = pacy + 50;
             if ((pacrectleft < wallxright and pacrectright > wallxleft)
             and (pactrecttop < wallybottom and pactrectbottom > wallytop))
             {
@@ -132,40 +158,50 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
                          or event.key.code == sf::Keyboard::A or
                          event.key.code == sf::Keyboard::D))
                 {
-                    //
-                    switch (previouskeydirection)
-                    {
-                        case sf::Keyboard::W:
-                            uppressed = false;
-                            break;
-                        case sf::Keyboard::S:
-                            downpressed = false;
-                            break;
-                        case sf::Keyboard::A:
-                            leftpressed = false;
-                            break;
-                        case sf::Keyboard::D:
-                            rightpressed = false;
-                            break;
-                    }
+                    newkey = event.key.code;
                 }
-                handlePlayerInputPacman(event.key.code, true);
+                //only want this to execute when new key has no collision
+                if (count == 0)
+                {
+                    handlePlayerInputPacman(event.key.code, true);
+                    count += 1;
+                }
                 break;
             case sf::Event::Closed:
                 windowptr->close();
                 break;
         }
     }
-    update(timeperframe, windowptr);
+    if (newkey != sf::Keyboard::Unknown and !NewKeyCheckWallCollide(windowptr))
+    {
+        update(newkey, timeperframe,windowptr);
+        previouskeydirection = newkey;
+        newkey = sf::Keyboard::Unknown;
+    } else {
+        update(previouskeydirection, timeperframe, windowptr);
+    }
+
 }
 
 
 
-
-
-
-
-
+/*
+                   switch (previouskeydirection)
+                   {
+                       case sf::Keyboard::W:
+                           uppressed = false;
+                           break;
+                       case sf::Keyboard::S:
+                           downpressed = false;
+                           break;
+                       case sf::Keyboard::A:
+                           leftpressed = false;
+                           break;
+                       case sf::Keyboard::D:
+                           rightpressed = false;
+                           break;
+                   }
+                    */
 
 
 
