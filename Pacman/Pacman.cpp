@@ -34,7 +34,7 @@ bool Pacman::Pacman::CrossesOffScreenLeft()
     sf::Vector2f pacposition = thepacman.getPosition();
     if (pacposition.x <= topleftx)
     {
-        thepacman.setPosition((18 * 50) - 5, pacposition.y);
+        thepacman.setPosition((21 * 50) - 5, pacposition.y);
         return true;
     }
     return false;
@@ -44,7 +44,7 @@ bool Pacman::Pacman::CrossesOffScreenLeft()
 bool Pacman::Pacman::CrossesOffScreenRight()
 {
     sf::Vector2f pacposition = thepacman.getPosition();
-    if (pacposition.x >= 18 * 50)
+    if (pacposition.x >= 21 * 50)
     {
         thepacman.setPosition(5, pacposition.y);
         return true;
@@ -57,6 +57,7 @@ void Pacman::Pacman::update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::R
 {
     sf::Vector2f movement(0.f, 0.f);
     sf::Vector2f oldposition = thepacman.getPosition();
+    sf::Vector2f newposition;
     if (keycode == sf::Keyboard::W)
         movement.y -= speed;
     if (keycode == sf::Keyboard::S)
@@ -74,6 +75,18 @@ void Pacman::Pacman::update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::R
         thepacman.setPosition(oldposition);
         xpos = oldposition.x;
         ypos = oldposition.y;
+    }
+    if (CrossesOffScreenLeft())
+    {
+        newposition = thepacman.getPosition();
+        xpos = newposition.x;
+        ypos = newposition.y;
+    }
+    if (CrossesOffScreenRight())
+    {
+        newposition = thepacman.getPosition();
+        xpos = newposition.x;
+        ypos = newposition.y;
     }
 }
 
@@ -138,12 +151,7 @@ bool Pacman::Pacman::CollisonCheck(sf::RenderWindow* windowptr, float pacx, floa
                 jboy.setPosition(wall.first, wall.second);
                 jboy.setFillColor(whatcolor);
                 windowptr->draw(jboy);
-                std::cout << "x of pacrect " << xpos << std::endl;
-                std::cout << "y of pacrect " << ypos << std::endl;
                 sf::Vector2f currpos = thepacman.getPosition();
-                std::cout << "center x of sprite pac: " << currpos.x << std::endl;
-                std::cout << "center y of sprite pac: " << currpos.y << std::endl;
-
                 hascollision = true;
             }
     }
@@ -197,4 +205,6 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     }
 
 }
+
+
 
