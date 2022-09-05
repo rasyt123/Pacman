@@ -28,6 +28,31 @@ void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
 }
 
 
+bool Pacman::Pacman::CrossesOffScreenLeft()
+{
+    float topleftx = 0;
+    sf::Vector2f pacposition = thepacman.getPosition();
+    if (pacposition.x <= topleftx)
+    {
+        thepacman.setPosition((18 * 50) - 5, pacposition.y);
+        return true;
+    }
+    return false;
+}
+
+
+bool Pacman::Pacman::CrossesOffScreenRight()
+{
+    sf::Vector2f pacposition = thepacman.getPosition();
+    if (pacposition.x >= 18 * 50)
+    {
+        thepacman.setPosition(5, pacposition.y);
+        return true;
+    }
+    return false;
+}
+
+
 void Pacman::Pacman::update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::RenderWindow* windowptr)
 {
     sf::Vector2f movement(0.f, 0.f);
@@ -172,27 +197,4 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     }
 
 }
-
-
-
-/*
-                   switch (previouskeydirection)
-                   {
-                       case sf::Keyboard::W:
-                           uppressed = false;
-                           break;
-                       case sf::Keyboard::S:
-                           downpressed = false;
-                           break;
-                       case sf::Keyboard::A:
-                           leftpressed = false;
-                           break;
-                       case sf::Keyboard::D:
-                           rightpressed = false;
-                           break;
-                   }
-                    */
-
-
-
 
