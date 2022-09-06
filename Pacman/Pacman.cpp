@@ -20,6 +20,7 @@ Pacman::Pacman::Pacman(int row1, int col1, std::vector<std::pair<float, float>> 
     rectanglelocations = rectangleneeds;
     PacmanSetDetect();
     pacmanmap = zacmanmap;
+    thepelletcoords = pelletcoords;
 }
 
 void Pacman::Pacman::handlePlayerInputPacman(sf::Keyboard::Key key,
@@ -71,6 +72,10 @@ void Pacman::Pacman::update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::R
     sf::Vector2f pos = thepacman.getPosition();
     xpos = pos.x - 25;
     ypos = pos.y - 25;
+    if (PelletCollision(windowptr, xpos, ypos))
+    {
+
+    }
     if (CollisonCheck(windowptr, xpos, ypos))
     {
         thepacman.setPosition(oldposition);
@@ -131,6 +136,7 @@ void Pacman::Pacman::PacmanSetDetect() {
 bool Pacman::Pacman::PelletCollision(sf::RenderWindow *windowptr, float pacx, float pacy)
 {
     bool hascollision = false;
+    std::cout << "Size of pelletcoords: " << thepelletcoords.size() << std::endl;
     for (std::pair<float, float> centercoords : thepelletcoords)
     {
         float boxxleft = centercoords.first - 5;
@@ -148,16 +154,15 @@ bool Pacman::Pacman::PelletCollision(sf::RenderWindow *windowptr, float pacx, fl
         {
             hascollision = true;
             score += 10;
-            int pelletrow = (centercoords.first - 25) / 50;
-            int pelletcol = (centercoords.second - 25) / 50;
-            pacmanmap[pelletrow][pelletcol] = ' ';
+            int pelletx = (centercoords.first - 25) / 50;
+            int pellety = (centercoords.second - 25) / 50;
+            std::cout << "Pelletx: " << pelletx << std::endl;
+            std::cout << "Pellety: " << pellety << std::endl;
+            pacmanmap[pellety][pelletx] = 'Y';
+            std::cout << "did map change: " << pacmanmap[1][2] << std::endl;
         }
     }
-
-
-
-
-
+    return hascollision;
 }
 
 
