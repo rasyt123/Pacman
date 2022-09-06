@@ -17,11 +17,11 @@ namespace Pacman {
         public:
             Game(int score, int lives);
             void PacGameLoop();
-            void DrawMap(sf::RenderWindow* windowptr);
-            void RenderWall(int row, int col, sf::RenderWindow* windowptr);
-            void RenderPellet(int row, int col, sf::RenderWindow* windowptr);
+            void DrawMap(sf::RenderWindow* windowptr, bool once, std::shared_ptr<std::vector<std::string>> paczap);
+            void RenderWall(int row, int col, sf::RenderWindow* windowptr, bool once);
+            void RenderPellet(int row, int col, sf::RenderWindow* windowptr, bool once);
             void RenderPowerPellet(int row, int col, sf::RenderWindow* windowptr);
-            void CollisonCheck(Pacman& paccolide);
+            bool CollisonCheck(Pacman& paccolide);
 
         private:
             int score;
