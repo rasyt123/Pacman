@@ -3,18 +3,24 @@
 //
 
 #include "Game.h"
+
+#include <memory>
 void Pacman::Game::PacGameLoop() {
     //each tile 50 pixels wide 50 pixels tall
+    bool once = true;
     sf::Clock clock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
     sf::RenderWindow pacwindow(sf::VideoMode(50 * pacmanmap[0].size(), 50 * pacmanmap.size()), "Pacman", sf::Style::Close | sf::Style::Titlebar);
     sf::Time TimePerFrame;
     TimePerFrame = sf::seconds(1.f / 60.f);
     pacwindow.setFramerateLimit(60);
-    DrawMap(&pacwindow);
-    Pacman pacman1(1, 2, rectanglecoords);
+    auto pacmanmappointer = std::make_shared<std::vector<std::string>>(pacmanmap);
+    DrawMap(&pacwindow, once, pacmanmappointer);
+    std::cout << "Pellet coords size: " << pelletcoords.size() << std::endl;
+    Pacman pacman1(1, 2, rectanglecoords, pacmanmappointer, pelletcoords);
     pacman1.RenderPacman(&pacwindow);
     pacwindow.draw(pacman1.thepacman);
+    once = false;
     while (pacwindow.isOpen())
     {
         timeSinceLastUpdate += clock.restart();
@@ -22,8 +28,9 @@ void Pacman::Game::PacGameLoop() {
         {
             timeSinceLastUpdate -= TimePerFrame;
             pacwindow.clear();
-            DrawMap(&pacwindow);
+            DrawMap(&pacwindow, once, pacmanmappointer);
             pacman1.ProcessPacmanMovement(&pacwindow, TimePerFrame);
+            std::cout << pacmanmap[1][2] << std::endl;
             pacwindow.draw(pacman1.thepacman);
             pacwindow.display();
         }
@@ -31,7 +38,7 @@ void Pacman::Game::PacGameLoop() {
 }
 
 
-void Pacman::Game::RenderWall(int row, int col, sf::RenderWindow* windowptr)
+void Pacman::Game::RenderWall(int row, int col, sf::RenderWindow* windowptr, bool once)
 {
     float floatposy = row * 50;
     float floatposx = col * 50;
@@ -40,11 +47,14 @@ void Pacman::Game::RenderWall(int row, int col, sf::RenderWindow* windowptr)
     wall.setPosition(floatposx, floatposy);
     wall.setFillColor(blue);
     windowptr->draw(wall);
-    std::pair<float, float> currentcoords(floatposx, floatposy);
-    rectanglecoords.push_back(currentcoords);
+    if (once)
+    {
+        std::pair<float, float> currentcoords(floatposx, floatposy);
+        rectanglecoords.push_back(currentcoords);
+    }
 }
 
-void Pacman::Game::RenderPellet(int row, int col, sf::RenderWindow* windowptr) {
+void Pacman::Game::RenderPellet(int row, int col, sf::RenderWindow* windowptr, bool once) {
     float floatposy = row * 50;
     float floatposx = col * 50;
     sf::Color white(255, 255, 255);
@@ -53,7 +63,11 @@ void Pacman::Game::RenderPellet(int row, int col, sf::RenderWindow* windowptr) {
     pellet.setOrigin(5,5);
     pellet.setPosition(floatposx + 25, floatposy + 25);
     windowptr->draw(pellet);
-    std::pair<float, float> currentcoords;
+    if (once)
+    {
+        std::pair<float, float> currentcoords(floatposx + 25, floatposy + 25);
+        pelletcoords.push_back(currentcoords);
+    }
 }
 
 
@@ -71,19 +85,19 @@ void Pacman::Game::RenderPowerPellet(int row, int col, sf::RenderWindow* windowp
 }
 
 
-void Pacman::Game::DrawMap(sf::RenderWindow* windowptr) {
+void Pacman::Game::DrawMap(sf::RenderWindow* windowptr, bool once, std::shared_ptr<std::vector<std::string>> paczap) {
     int dotcounter = 0;
     for (int y = 0; y  < pacmanmap.size(); y++)
     {
         for (int x = 0; x < pacmanmap[0].size(); x++)
         {
-            switch (pacmanmap[y][x])
+            switch (paczap->at(y).at(x))
             {
                 case '#':
-                    RenderWall(y, x, windowptr);
+                    RenderWall(y, x, windowptr, once);
                     break;
                 case '.':
-                    RenderPellet(y, x, windowptr);
+                    RenderPellet(y, x, windowptr, once);
                     break;
                 case 'o':
                     RenderPowerPellet(y, x, windowptr);
@@ -97,4 +111,3 @@ Pacman::Game::Game(int score, int lives) {
     this->score = score;
     this->score = lives;
 }
-
