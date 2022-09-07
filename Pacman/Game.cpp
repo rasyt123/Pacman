@@ -12,6 +12,8 @@ void Pacman::Game::PacGameLoop() {
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
     sf::RenderWindow pacwindow(sf::VideoMode(50 * pacmanmap[0].size(), 50 * pacmanmap.size()), "Pacman", sf::Style::Close | sf::Style::Titlebar);
     sf::Time TimePerFrame;
+    sf::Texture PacmanTextureSheet;
+    PacmanTextureSheet.loadFromFile("C:\\Users\\rasyt\\Desktop\\Images\\pacmantexturesheet.png");
     TimePerFrame = sf::seconds(1.f / 60.f);
     pacwindow.setFramerateLimit(60);
     auto pacmanmappointer = std::make_shared<std::vector<std::string>>(pacmanmap);
@@ -111,3 +113,4 @@ Pacman::Game::Game(int score, int lives) {
     this->score = score;
     this->score = lives;
 }
+
