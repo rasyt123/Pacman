@@ -3,10 +3,11 @@
 //
 
 #include "Pacman.h"
-void Pacman::Pacman::RenderPacman(sf::RenderWindow* windowptr) {
-    sf::Color yellow(255, 255, 0);
-    thepacman.setRadius(25);
-    thepacman.setFillColor(yellow);
+void Pacman::Pacman::RenderPacman(sf::RenderWindow* windowptr, sf::Texture* text) {
+    thepacman.setSize(sf::Vector2f(50, 50));
+    //sf::Color yellow(255, 255, 0);
+    //thepacman.setFillColor(yellow);
+    thepacman.setTexture(text);
     thepacman.setOrigin(25, 25);
     thepacman.setPosition(xpos + 25, ypos + 25);
 }
@@ -55,19 +56,31 @@ bool Pacman::Pacman::CrossesOffScreenRight()
 }
 
 
-void Pacman::Pacman::update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::RenderWindow* windowptr)
+void Pacman::Pacman::update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::RenderWindow* windowptr, Animation& pacmansheet)
 {
     sf::Vector2f movement(0.f, 0.f);
     sf::Vector2f oldposition = thepacman.getPosition();
     sf::Vector2f newposition;
-    if (keycode == sf::Keyboard::W)
+    int row;
+    if (keycode == sf::Keyboard::W) {
         movement.y -= speed;
-    if (keycode == sf::Keyboard::S)
+        row = 3;
+    }
+
+    if (keycode == sf::Keyboard::S) {
         movement.y += speed;
-    if (keycode == sf::Keyboard::A)
+        row = 1;
+    }
+
+    if (keycode == sf::Keyboard::A) {
         movement.x -= speed;
-    if (keycode == sf::Keyboard::D)
+        row = 2;
+    }
+
+    if (keycode == sf::Keyboard::D) {
         movement.x += speed;
+        row = 0;
+    }
     thepacman.move(movement);
     sf::Vector2f pos = thepacman.getPosition();
     xpos = pos.x - 25;
@@ -81,6 +94,11 @@ void Pacman::Pacman::update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::R
         thepacman.setPosition(oldposition);
         xpos = oldposition.x;
         ypos = oldposition.y;
+    } else
+    {
+        std::cout << "curr row: " << row << std::endl;
+        pacmansheet.Update(row,10, 12, deltaTime.asSeconds());
+        thepacman.setTextureRect(pacmansheet.uvRect);
     }
     if (CrossesOffScreenLeft())
     {
@@ -203,7 +221,7 @@ bool Pacman::Pacman::CollisonCheck(sf::RenderWindow* windowptr, float pacx, floa
     return false;
 }
 
-void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time timeperframe)
+void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time timeperframe, Animation& pacmansheet)
 {
     sf::Event event;
     //When I tap the key, I want to keep moving in that direction until I hit a wall
@@ -239,12 +257,13 @@ void Pacman::Pacman::ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time
     }
     if (newkey != sf::Keyboard::Unknown and !NewKeyCheckWallCollide(windowptr))
     {
-        update(newkey, timeperframe,windowptr);
+        update(newkey, timeperframe,windowptr, pacmansheet);
         previouskeydirection = newkey;
         newkey = sf::Keyboard::Unknown;
     } else {
-        update(previouskeydirection, timeperframe, windowptr);
+        update(previouskeydirection, timeperframe, windowptr, pacmansheet);
     }
 
 }
+
 
