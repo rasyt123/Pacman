@@ -13,9 +13,8 @@
     class Animation
     {
     public:
-            Animation(sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
-            ~Animation();
-            void Update(int row, float deltaTime);
+            Animation(sf::Texture* texture, sf::Vector2u imageCount, float , int col);
+            void Update(int row,int col, int colstop, float deltaTime);
     public:
         sf::IntRect uvRect;
     private:
