@@ -9,6 +9,7 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Animation.h"
 namespace Pacman
 {
     class Pacman
@@ -16,14 +17,14 @@ namespace Pacman
     public:
         Pacman(int row1, int col1, std::vector<std::pair<float, float>> rectangleneeds, std::shared_ptr<std::vector<std::string>> zacmanmap,
                std::vector<std::pair<float, float>> pelletcoords);
-        void RenderPacman(sf::RenderWindow* windowptr);
-        void ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time timeperframe);
+        void RenderPacman(sf::RenderWindow* windowptr, sf::Texture* text);
+        void ProcessPacmanMovement(sf::RenderWindow* windowptr, sf::Time timeperframe, Animation& pacmansheet);
         void handlePlayerInputPacman(sf::Keyboard::Key key, bool isPressed);
         void PacmanSetDetect();
         bool NewKeyCheckWallCollide(sf::RenderWindow* windowptr);
         bool CrossesOffScreenLeft();
         bool CrossesOffScreenRight();
-        void update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::RenderWindow* windowptr);
+        void update(sf::Keyboard::Key keycode, sf::Time deltaTime, sf::RenderWindow* windowptr, Animation& pacmansheet);
         std::vector<float> topleftrect;
         std::vector<float> toprightrect;
         std::vector<float> bottomleftrect;
@@ -32,7 +33,7 @@ namespace Pacman
         bool CollisonCheck(sf::RenderWindow* windowptr, float pacx, float pacy);
         bool PelletCollision(sf::RenderWindow* windowptr, float pacx, float pacy);
 
-        sf::CircleShape thepacman;
+        sf::RectangleShape thepacman;
         float xpos;
         float ypos;
     private:
@@ -57,3 +58,4 @@ namespace Pacman
 
 
 #endif //PACMAN_PACMAN_H
+
