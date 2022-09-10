@@ -84,6 +84,40 @@ std::pair<int,int> Pacman::Blinky::GrabTileCoords(float x, float y)
     }
 }
 
+std::pair<int,int> Pacman::Blinky::LookAheadTile(sf::Keyboard::Key direction)
+{
+    float thex;
+    float they;
+    sf::Vector2f ghostpos;
+    std::pair<int,int> aheadtile;
+    switch (direction) {
+        case sf::Keyboard::W:
+            ghostpos = ghost.getPosition();
+            aheadtile = GrabTileCoords(ghostpos.x, ghostpos.y);
+            aheadtile.first = aheadtile.first - 1;
+            break;
+        case sf::Keyboard::A:
+            ghostpos = ghost.getPosition();
+            aheadtile = GrabTileCoords(ghostpos.x, ghostpos.y);
+            aheadtile.second = aheadtile.second - 1;
+            break;
+        case sf::Keyboard::S:
+            ghostpos = ghost.getPosition();
+            aheadtile = GrabTileCoords(ghostpos.x, ghostpos.y);
+            aheadtile.first = aheadtile.first + 1;
+            
+            break;
+        case sf::Keyboard::D:
+            ghostpos = ghost.getPosition();
+            aheadtile = GrabTileCoords(ghostpos.x, ghostpos.y);
+            aheadtile.second = aheadtile.second + 1;
+            break;
+    }
+    return aheadtile;
+}
+
+
+
 
 
 void Pacman::Blinky::Update() {
@@ -146,6 +180,6 @@ Pacman::Blinky::Blinky(float pacmanposy, float pacmanposx, int pacmantilerow, in
     ghost.setTexture(thetext);
     ghost.setOrigin(25, 25);
     ghost.setPosition(posx + 25, posy + 25);
-
 }
+
 
