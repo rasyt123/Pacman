@@ -57,6 +57,35 @@ void Pacman::Blinky::SetYellowTileIntersections()
 }
 
 
+int Pacman::Blinky::CalculateEuclidean(int startrow, int startcol, int endrow, int endcol)
+{
+    int rowdiff = abs(endrow - startrow);
+    int coldiff = abs(endcol - startcol);
+    int distancesquared = (rowdiff* rowdiff) + (coldiff * coldiff);
+    return distancesquared;
+}
+
+std::pair<int,int> Pacman::Blinky::GrabTileCoords(float x, float y)
+{
+    for (int height = 0; height < pacmanmap.size(); height++)
+    {
+        for (int width = 0; width < pacmanmap[0].size(); width++)
+        {
+            float cellxpos = width * 50;
+            float cellypos = height * 50;
+            if (x > cellxpos and x < cellxpos + 50 and y > cellypos and y < cellypos + 50)
+            {
+                int row = height;
+                int col = width;
+               std::pair<int, int> tilecoords(row,col);
+               return tilecoords;
+            }
+        }
+    }
+}
+
+
+
 void Pacman::Blinky::Update() {
     sf::Vector2f movement(0.f, 0.f);
 
@@ -119,3 +148,4 @@ Pacman::Blinky::Blinky(float pacmanposy, float pacmanposx, int pacmantilerow, in
     ghost.setPosition(posx + 25, posy + 25);
 
 }
+
