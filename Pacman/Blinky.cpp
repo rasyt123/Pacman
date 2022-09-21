@@ -105,7 +105,7 @@ std::pair<int,int> Pacman::Blinky::LookAheadTile(sf::Keyboard::Key direction)
             ghostpos = ghost.getPosition();
             aheadtile = GrabTileCoords(ghostpos.x, ghostpos.y);
             aheadtile.first = aheadtile.first + 1;
-            
+
             break;
         case sf::Keyboard::D:
             ghostpos = ghost.getPosition();
@@ -117,22 +117,94 @@ std::pair<int,int> Pacman::Blinky::LookAheadTile(sf::Keyboard::Key direction)
 }
 
 
+bool Pacman::Blinky::isGreen(std::pair<int,int> thetile)
+{
+    if (std::find(greentileintersections.begin(), greentileintersections.end(), thetile) != greentileintersections.end())
+    {
+        return true;
+    }
+    return false;
+}
+
+
+
+bool Pacman::Blinky::isYellow(std::pair<int,int> thetile)
+{
+    if (std::find(yellowtileintersections.begin(), yellowtileintersections.end(), thetile) !=  yellowtileintersections.end())
+    {
+
+    }
+    return false;
+}
+
+
+bool Pacman::Blinky::isWall(std::pair<int,int> thetile)
+{
+    return pacmanmap[thetile.first][thetile.second] == '#';
+}
 
 
 
 void Pacman::Blinky::Update() {
     sf::Vector2f movement(0.f, 0.f);
+    //make sure to initialize blinky outside of the line with the ghosts
+
+
+    //if the current mode is in scatter
+    //otherwise if the current mode is in chase
+    //or if frightened, deal with it
 
     //if im currently on a green tile, make the correct turn
         //set the current direction to be the choice made from calculating the euclidean distance (tileturn)
     //if im currently on a yellow tile
-        //set
+        //set current direction to be
+    bool decisionmade = false;
+         if (scatter)
+         {
+
+         }
+         else if (chase)
+         {
+
+         } else if (frightened)
+         {
 
 
-    //Take the current direction/position  and look ahead by one tile
+         }
+     std::pair<int, int> greentilecurrent = GrabTileCoords(posx, posy);
+     for (auto item : greentileintersections)
+     {
+         if (greentilecurrent.first == item.first and greentilecurrent.second == item.second)
+         {
+             currentdirection = newdirection;
+             decisionmade = true;
+         }
+     }
+     std::pair<int,int> yellowtilecurrent = GrabTileCoords(posx, posy);
+     for (auto item : yellowtileintersections)
+     {
+         if (yellowtilecurrent.first = item.first and yellowtilecurrent.second == item.second)
+         {
+             currentdirection = newdirection;
+             decisionmade = true;
+         }
+
+     }
+     if (!decisionmade)
+     {
+         std::pair<int,int> aheadtile = LookAheadTile(currentdirection);
+
+
+
+
+
+     }
+
+
+    //Take the current direction/position and look ahead by one tile
             //iF the tile ahead of the current tile is a green tile
                 //from green tile, check all directional tiles that arevalid that dont face the same direction
-                    //for each one of these tiles, calculate euclidean distance,
+                    //for each one of these tiles, calculate euclidean distance from target tile,
                         //if the euclidean distances are the same, chose order of
                         //up > left > down
                         //choose tileturn to be whatever direction
@@ -177,9 +249,16 @@ Pacman::Blinky::Blinky(float pacmanposy, float pacmanposx, int pacmantilerow, in
     ghost.setSize(sf::Vector2f(50, 50));
     //sf::Color yellow(255, 255, 0);
     //thepacman.setFillColor(yellow);
+
+    /*
+     * Don't forget to set the position to be
+     *
+     *
+     */
     ghost.setTexture(thetext);
     ghost.setOrigin(25, 25);
     ghost.setPosition(posx + 25, posy + 25);
+
 }
 
 
