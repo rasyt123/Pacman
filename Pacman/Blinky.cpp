@@ -145,6 +145,13 @@ bool Pacman::Blinky::isWall(std::pair<int,int> thetile)
 }
 
 
+bool Pacman::Blinky::isValid(std::pair<int, int> thetile)
+{
+    return thetile.first >= 0 and thetile.first < pacmanmap.size() and thetile.second >= 0 and thetile.second < pacmanmap[0].size()
+    and pacmanmap[thetile.first][thetile.second] == ' ';
+}
+
+
 
 void Pacman::Blinky::Update() {
     sf::Vector2f movement(0.f, 0.f);
@@ -187,8 +194,18 @@ void Pacman::Blinky::Update() {
         std::pair<int, int> aheadtile = LookAheadTile(currentdirection);
         if (isGreen(aheadtile))
         {
+            std::vector<std::pair<int, int>> validcoordstest = {{aheadtile.first-1, aheadtile.second}, {aheadtile.first, aheadtile.second - 1},
+                                                                {aheadtile.first+1, aheadtile.second}, {aheadtile.first, aheadtile.second + 1}};
+            for (std::pair<int,int> coords : validcoordstest)
+            {
+                if (isValid(coords))
+                {
+                    
 
 
+                }
+
+            }
         } else if (isYellow(aheadtile))
         {
 
@@ -260,5 +277,6 @@ Pacman::Blinky::Blinky(float pacmanposy, float pacmanposx, int pacmantilerow, in
     ghost.setPosition(posx + 25, posy + 25);
 
 }
+
 
 
