@@ -132,6 +132,7 @@ bool Pacman::Blinky::isYellow(std::pair<int,int> thetile)
 {
     if (std::find(yellowtileintersections.begin(), yellowtileintersections.end(), thetile) !=  yellowtileintersections.end())
     {
+        return true;
 
     }
     return false;
@@ -155,50 +156,49 @@ void Pacman::Blinky::Update() {
     //or if frightened, deal with it
 
     //if im currently on a green tile, make the correct turn
-        //set the current direction to be the choice made from calculating the euclidean distance (tileturn)
+    //set the current direction to be the choice made from calculating the euclidean distance (tileturn)
     //if im currently on a yellow tile
-        //set current direction to be
+    //set current direction to be
     bool decisionmade = false;
-         if (scatter)
-         {
+    if (scatter)
+    {
 
-         }
-         else if (chase)
-         {
+    } else if (chase)
+    {
 
-         } else if (frightened)
-         {
-
-
-         }
-     std::pair<int, int> greentilecurrent = GrabTileCoords(posx, posy);
-     for (auto item : greentileintersections)
-     {
-         if (greentilecurrent.first == item.first and greentilecurrent.second == item.second)
-         {
-             currentdirection = newdirection;
-             decisionmade = true;
-         }
-     }
-     std::pair<int,int> yellowtilecurrent = GrabTileCoords(posx, posy);
-     for (auto item : yellowtileintersections)
-     {
-         if (yellowtilecurrent.first = item.first and yellowtilecurrent.second == item.second)
-         {
-             currentdirection = newdirection;
-             decisionmade = true;
-         }
-
-     }
-     if (!decisionmade)
-     {
-         std::pair<int,int> aheadtile = LookAheadTile(currentdirection);
+    } else if (frightened)
+    {
 
 
+    }
+    std::pair<int, int> tilecurrent = GrabTileCoords(posx, posy);
+    if (isGreen(tilecurrent))
+    {
+        currentdirection = newdirection;
+        decisionmade = true;
+    }
+    if (isYellow(tilecurrent))
+    {
+        currentdirection = newdirection;
+        decisionmade = true;
+    }
+    if (!decisionmade)
+    {
+        std::pair<int, int> aheadtile = LookAheadTile(currentdirection);
+        if (isGreen(aheadtile))
+        {
 
 
+        } else if (isYellow(aheadtile))
+        {
 
-     }
+        } else if (isWall(aheadtile))
+        {
+
+
+        }
+    }
+}
 
 
     //Take the current direction/position and look ahead by one tile
@@ -226,7 +226,7 @@ void Pacman::Blinky::Update() {
 
 
 
-}
+
 
 //Two modes: scatter and chase
 //scatter for blinky means getting to the corner tile as the target
